@@ -14,6 +14,50 @@ router.use(methodOverride(function(req, res){
       }
 }))
 
+router.get('/search/:location', function(req, res) {
+        if (req.params.location) {
+         mongoose.model('Event').find({ location: req.params.location }, function (err, event) {
+             if (err) {
+        console.log('GET Error: There was a problem retrieving: ' + err);
+      } else {
+        console.log('GET Retrieving event based on location: ' + event.location);
+        res.format({
+          html: function(){
+              res.render('events/search', {
+                "description" : event.description,
+                "starttime" : event.starttime,
+                "endtime" : event.endtime,
+                "location" : event.location,
+                "name" : event.name
+              });
+
+	         },
+        	  json: function(){
+              	res.json(event);
+         	 }
+      
+	 /*var q = mongoose.model('Event').find({"location": {"$gte": new Date(req.params.query), "$lt": (new Date(req.params.query) + 1)}});
+                
+		var promise = q.exec();
+                promise.addBack(function(err, docs){
+                	res.format({
+                        //HTML response will render the 'edit.jade' template
+                        html: function(){
+                              res.render('events/search', {
+                                   "events" : docs
+                         });
+                      },
+                         //JSON response will return the JSON output
+                        json: function(){
+                       res.json(docs);
+            */            });
+                    }
+
+                });
+	  }
+	});
+          
+
 //build the REST operations at the base for events
 //this will be accessible from http://130.233.42.130:8080/events if the default route for / is left unchanged
 router.route('/')
@@ -58,7 +102,7 @@ router.route('/')
             name : name
         }, function (err, event) {
               if (err) {
-                  res.send("There was a problem adding the information to the database.");
+                  res.send("There was a problem adding the information to the databse.");
               } else {
                   //Event has been created
                   console.log('POST creating new event: ' + event);
@@ -139,27 +183,6 @@ router.route('/:id')
       }
     });
   });
-
-router.get('/search', function(req, res) {
-            var events = mongoose.model('Event').find({"starttime": {"$gte": new Date(req.minstarttime), "$lt": new Date(req.maxstarttime)}});
-                if (!events) {
-                    console.log("Error finding events.");
-                } else {
-                    //Return the events
-                    res.format({
-                        //HTML response will render the 'edit.jade' template
-                        html: function(){
-                               res.render('events/search', {
-                                        "events" : events
-                              });
-                         },
-                         //JSON response will return the JSON output
-                        json: function(){
-                               res.json(events);
-                         }
-                    });
-                }
-            });
 
 router.route('/:id/edit')
 	//GET the individual event by Mongo ID
