@@ -14,6 +14,7 @@ router.use(methodOverride(function(req, res){
       }
 }))
 
+// Search events by location and Date ( code for searching by date is pending) 
 router.get('/search/:location', function(req, res) {
         if (req.params.location) {
          mongoose.model('Event').find({ location: req.params.location }, function (err, event) {
