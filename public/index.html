@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset='utf-8' />
+<!-- Used libraries: bootstrap, fullcalendar, jquery and moment-->
 <link href='lib/bootstrap/dist/css/bootstrap.css' rel='stylesheet' />
 <link href='lib/bootstrap/dist/css/bootstrap-theme.css' rel='stylesheet' />
 <link href='dist/fullcalendar.css' rel='stylesheet' />
@@ -19,7 +20,8 @@
 			},
 			defaultDate: moment().format('YYYY-MM-DD'),
 			editable: true,
-			eventLimit: true, // allow "more" link when too many events
+			eventLimit: true,
+			// Load events to show in calendar:
 			events: function(start, end, timezone, callback) {
 			  $.ajax({
 				type:'GET',
@@ -40,6 +42,7 @@
 				}
 			  });
 			},
+			// Put data about clicked event in form:
 			eventClick: function(calEvent, jsEvent, view) {
 		      $('#changeEventForm').find('input[name="eventid"]').val(calEvent.id);
 		      $('#changeEventForm').find('input[name="name"]').val(calEvent.title);
@@ -51,6 +54,7 @@
 		  });
 	});
 	
+	// Submitting a new events through the form:
 	function submitNew() {
 		var name = $('#newEventForm').find('input[name="name"]').val();
 		var description = $('#newEventForm').find('input[name="description"]').val();
@@ -74,6 +78,7 @@
 		});
 	}
 	
+	// Submitting a change to a viewed event:
 	function submitChange() {
 		var eventid = $('#changeEventForm').find('input[name="eventid"]').val();
 		var name = $('#changeEventForm').find('input[name="name"]').val();
@@ -98,6 +103,7 @@
 		});
 	}
 	
+	// Deleting a viewed event:
 	function submitDelete() {
 		var eventid = $('#changeEventForm').find('input[name="eventid"]').val();
 		$.ajax({
@@ -106,6 +112,21 @@
 		  success: function() {
 		    $('#calendar').fullCalendar('refetchEvents');
 		    $('#changeEventForm')[0].reset();
+		  }
+		});
+	}
+	
+	// Alert all event titles:
+	function showAll() {
+		$.ajax({
+		  type:'GET',
+		  url:'http://130.233.42.130:8080/events',
+		  success: function(results) {
+			var events = [];
+			for (i = 0; i < results.length; i++) {
+			  events.push(results[i].name);
+			}
+			alert(events);
 		  }
 		});
 	}
@@ -125,9 +146,12 @@
 </style>
 </head>
 <body>
+	<div id='footer' style='width:840px; margin-left:auto; margin-right:auto;'>
+		<center><a href="javascript: showAll()">Show all events</a><br /><br /><br /></center>
+	</div>
 	<div id='calendar'></div>
 	<br />
-	<div id='footer' style='width:840px; margin-left:auto; margin-right:auto;'>
+	<div id='forms' style='width:840px; margin-left:auto; margin-right:auto;'>
 		<div id='newEvent' style='width:420px; float:left;'>
 			<h1>New event:</h1><br />
 			<form id="newEventForm">
@@ -153,6 +177,7 @@
 				<tr><td height='40'>Location:</td><td><input type='text' name='location'></td></tr>
 				<tr><td height='40'></td><td><a href="javascript: submitChange()">Submit changes</a></td></tr>
 				<tr><td height='40'></td><td><a href="javascript: submitDelete()">Delete</a></td></tr>
+				</table>
 			</form>
 		</div>
 	</div>
