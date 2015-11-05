@@ -17,7 +17,8 @@ $.ajax({
   url:"http://130.233.42.130:8080/events",
   success: function(data) {
     alert('data:' + data);
-    alert('data[0]:' + data);
+    alert('data[0]:' + data[0]);
+    alert('data[0].description:' + data[0].description);
   },
   error: function(request, status, error) {
     alert('error:' + error);

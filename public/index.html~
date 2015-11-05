@@ -16,7 +16,8 @@ $.ajax({
   type:'GET',
   url:"http://130.233.42.130:8080/events",
   success: function(data) {
-    alert('success:' + data);
+    alert('data:' + data);
+    alert('data[0]:' + data);
   },
   error: function(request, status, error) {
     alert('error:' + error);
