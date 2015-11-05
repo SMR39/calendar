@@ -50,10 +50,11 @@ events: function(start, end, timezone, callback) {
           events.push({
             id: r._id,
             title: r.name,
-            start: r.starttime
+            start: moment(r.starttime).format('YYYY-MM-DD');
           });
         });
       }
+      events.push({title: 'All Day Event',start: moment().format('2015-11-03'});
       callback(events);
     }
   });
