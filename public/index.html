@@ -12,36 +12,17 @@
 <script>
 	$(document).ready(function() {
 
-/*$.getJSON('http://130.233.42.130:8080/events', function(data) {
-  alert(data);
-})
-.success(function() { alert("second success"); })
-.fail(function(jqXHR, textStatus, errorThrown) { alert('getJSON request failed! ' + textStatus); })
-.error(function() { alert("error"); })
-.complete(function() { alert("complete"); });
-*/
-
-/*$.ajax({
+$.ajax({
   type:'GET',
-  url:'130.233.42.130:8080/events',
-  headers: {
-     Type: "GET",        
-     Accept: "application/json; charset=utf-8",         
-    "Content-Type": "application/json; charset=utf-8"   
-  },
+  url:"http://130.233.42.130:8080/events",
   success: function(data) {
-    alert('success:' + data);
+    alert('data:' + data);
+    alert('data[0]:' + data);
   },
   error: function(request, status, error) {
     alert('error:' + error);
   }
-});*/
-
-$.get('http://130.233.42.130:8080/events', function(data) {
-  alert("test");
-}, "json").done(function( data ) {
-    alert( "Data Loaded: " + data );
-  });
+});
 		
 		$('#calendar').fullCalendar({
 			header: {
