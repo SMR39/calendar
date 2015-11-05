@@ -10,19 +10,7 @@
 <script src='lib/jquery/dist/jquery.js'></script>
 <script src='dist/fullcalendar.js'></script>
 <script>
-	$(document).ready(function() {
-
-$.ajax({
-  type:'GET',
-  url:"http://130.233.42.130:8080/events",
-  success: function(data) {
-    alert('data[0].description:' + data[0].description);
-  },
-  error: function(request, status, error) {
-    alert('error:' + error);
-  }
-});
-		
+	$(document).ready(function() {		
 		$('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -32,36 +20,96 @@ $.ajax({
 			defaultDate: moment().format('YYYY-MM-DD'),
 			editable: true,
 			eventLimit: true, // allow "more" link when too many events
-			/*events: [
-				{
-					title: 'All Day Event',
-					start: moment().format('2015-11-03')
+			events: function(start, end, timezone, callback) {
+			  $.ajax({
+				type:'GET',
+				url:'http://130.233.42.130:8080/events',
+				success: function(results) {
+				  var events = [];
+				  for (i = 0; i < results.length; i++) {
+					events.push({
+					  id: results[i]._id,
+					  title: results[i].name,
+					  start: moment(results[i].starttime).format('YYYY-MM-DD hh:mm'),
+					  end: moment(results[i].endtime).format('YYYY-MM-DD hh:mm'),
+					  description: results[i].description,
+					  location: results[i].location
+					});
+				  }
+				  callback(events);
 				}
-			]*/
-events: function(start, end, timezone, callback) {
-  $.ajax({
-    url:'http://130.233.42.130:8080/events',
-    type:'GET',
-    dataType: 'json',
-    success: function(doc) {
-      var events = [];
-      if(!!doc.result) {
-        $.map(doc.result, function(r) {
-          events.push({
-            id: r._id,
-            title: r.name,
-            start: moment(r.starttime).format('YYYY-MM-DD');
-          });
-        });
-      }
-      events.push({title: 'All Day Event',start: moment().format('2015-11-03')});
-      callback(events);
-    }
-  });
-}
-		});
-		
+			  });
+			},
+			eventClick: function(calEvent, jsEvent, view) {
+		      $('#changeEventForm').find('input[name="eventid"]').val(calEvent.id);
+		      $('#changeEventForm').find('input[name="name"]').val(calEvent.title);
+		      $('#changeEventForm').find('input[name="description"]').val(calEvent.description);
+		      $('#changeEventForm').find('input[name="starttime"]').val(calEvent.start);
+		      $('#changeEventForm').find('input[name="endtime"]').val(calEvent.end);
+		      $('#changeEventForm').find('input[name="location"]').val(calEvent.location);
+		    }
+		  });
 	});
+	
+	function submitNew() {
+		var name = $('#newEventForm').find('input[name="name"]').val();
+		var description = $('#newEventForm').find('input[name="description"]').val();
+		var starttime = $('#newEventForm').find('input[name="starttime"]').val();
+		var endtime = $('#newEventForm').find('input[name="endtime"]').val();
+		var location = $('#newEventForm').find('input[name="location"]').val();
+		$.ajax({
+		  type:'POST',
+		  data: {
+		    name: name,
+		    description: description,
+		    starttime: starttime,
+		    endtime: endtime,
+		    location: location
+		  },
+		  url:'http://130.233.42.130:8080/events',
+		  success: function() {
+		    $('#calendar').fullCalendar('refetchEvents');
+		    $('#newEventForm')[0].reset();
+		  }
+		});
+	}
+	
+	function submitChange() {
+		var eventid = $('#changeEventForm').find('input[name="eventid"]').val();
+		var name = $('#changeEventForm').find('input[name="name"]').val();
+		var description = $('#changeEventForm').find('input[name="description"]').val();
+		var starttime = $('#changeEventForm').find('input[name="starttime"]').val();
+		var endtime = $('#changeEventForm').find('input[name="endtime"]').val();
+		var location = $('#changeEventForm').find('input[name="location"]').val();
+		$.ajax({
+		  type:'PUT',
+		  data: {
+		    name: name,
+		    description: description,
+		    starttime: starttime,
+		    endtime: endtime,
+		    location: location
+		  },
+		  url:'http://130.233.42.130:8080/events/' + eventid + '/edit',
+		  success: function() {
+		    $('#calendar').fullCalendar('refetchEvents');
+		    $('#changeEventForm')[0].reset();
+		  }
+		});
+	}
+	
+	function submitDelete() {
+		var eventid = $('#changeEventForm').find('input[name="eventid"]').val();
+		$.ajax({
+		  type:'DELETE',
+		  url:'http://130.233.42.130:8080/events/' + eventid + '/edit',
+		  success: function() {
+		    $('#calendar').fullCalendar('refetchEvents');
+		    $('#changeEventForm')[0].reset();
+		  }
+		});
+	}
+	
 </script>
 <style>
 	body {
@@ -77,8 +125,36 @@ events: function(start, end, timezone, callback) {
 </style>
 </head>
 <body>
-
 	<div id='calendar'></div>
-
+	<br />
+	<div id='footer' style='width:840px; margin-left:auto; margin-right:auto;'>
+		<div id='newEvent' style='width:420px; float:left;'>
+			<h1>New event:</h1><br />
+			<form id="newEventForm">
+				<table>
+				<tr><td height='40'>Name:</td><td><input type='text' name='name'></td></tr>
+				<tr><td height='40'>Description:</td><td><input type='text' name='description'></td></tr>
+				<tr><td height='40'>Start time:</td><td><input type='text' name='starttime'> E.g. 2015-11-14 22:00</td></tr>
+				<tr><td height='40'>End time:</td><td><input type='text' name='endtime'> (Optional)</td></tr>
+				<tr><td height='40'>Location:</td><td><input type='text' name='location'></td></tr>
+				<tr><td height='40'></td><td><a href="javascript: submitNew()">Submit</a></td></tr>
+				</table>
+			</form>
+		</div>
+		<div id='changeEvent' style='width:420px; float:right;'>
+			<h1>View event:</h1><br />
+			<form id="changeEventForm">
+				<input type='hidden' name='eventid'>
+				<table>
+				<tr><td height='40'>Name:</td><td><input type='text' name='name'></td></tr>
+				<tr><td height='40'>Description:</td><td><input type='text' name='description'></td></tr>
+				<tr><td height='40'>Start time:</td><td><input type='text' name='starttime'> E.g. 2015-11-14 22:00</td></tr>
+				<tr><td height='40'>End time:</td><td><input type='text' name='endtime'> (Optional)</td></tr>
+				<tr><td height='40'>Location:</td><td><input type='text' name='location'></td></tr>
+				<tr><td height='40'></td><td><a href="javascript: submitChange()">Submit changes</a></td></tr>
+				<tr><td height='40'></td><td><a href="javascript: submitDelete()">Delete</a></td></tr>
+			</form>
+		</div>
+	</div>
 </body>
 </html>
