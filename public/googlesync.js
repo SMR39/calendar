@@ -1,18 +1,22 @@
 alert("test1");
 
 var fs = require('fs');
+alert("test2");
 var readline = require('readline');
+alert("test3");
 var google = require('googleapis');
+alert("test4");
 var googleAuth = require('google-auth-library');
+alert("test5");
 
 var SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
-alert("test2");
+alert("test6");
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
-  alert("Test");
+  alert("Test7");
   if (err) {
     console.log('Error loading client secret file: ' + err);
     return;
