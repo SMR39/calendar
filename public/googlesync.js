@@ -10,6 +10,7 @@ var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+  alert("Test");
   if (err) {
     console.log('Error loading client secret file: ' + err);
     return;
@@ -121,6 +122,7 @@ function listEvents(auth) {
         var event = events[i];
         var start = event.start.dateTime || event.start.date;
         console.log('%s - %s', start, event.summary);
+        alert(JSON.stringify(event));
       }
     }
   });
