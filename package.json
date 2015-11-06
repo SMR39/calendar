@@ -16,6 +16,8 @@
     "monk": "~1.0.1",
     "serve-favicon": "~2.3.0",
     "mongoose": "~4.1.11",
-    "method-override": "~2.3.5"
+    "method-override": "~2.3.5",
+    "googleapis": "~2.1.6",
+    "google-auth-library": "~0.9.6"
   }
 }
