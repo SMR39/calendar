@@ -33,3 +33,8 @@ curl -H "Content-Type: application/json" -X GET -d '{"minstarttime":"2014-01-20T
 curl http://karma:8080/events/new
 curl -H "Accept: application/json" -H "Content-Type: application/json" -X GET -d '{"minstarttime":"2014-01-20T21:56:59.301Z","maxstarttime":"2014-01-24T21:56:59.301Z"}' http://karma:8080/events/search/2014-01-22T14:54:59.301Z
 ```
+Install Google APIs
+```
+npm install googleapis --save
+npm install google-auth-library --save
+```
