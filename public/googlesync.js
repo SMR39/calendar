@@ -1,4 +1,4 @@
-alert("test1");
+alert(require('fs'));
 
 var fs = require('fs');
 alert("test2");
