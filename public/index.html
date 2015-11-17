@@ -130,6 +130,18 @@
 		  }
 		});
 	}
+
+	// Alert all event titles:
+	function syncEvents() {
+		$.ajax({
+		  type:'GET',
+		  url:'http://130.233.42.130:8080/sync',
+		  success: function() {
+			alert("Synchronized!");
+			// window reload?
+		  }
+		});
+	}
 	
 </script>
 <style>
@@ -147,7 +159,10 @@
 </head>
 <body>
 	<div id='footer' style='width:840px; margin-left:auto; margin-right:auto;'>
-		<center><a href="javascript: showAll()">Show all events</a><br /><br /><br /></center>
+		<center>
+			<a href="javascript: showAll()">Show all events</a><br />
+			<a href="javascript: syncEvents()">Synchronize</a><br /><br /><br />
+		</center>
 	</div>
 	<div id='calendar'></div>
 	<br />
