@@ -14,6 +14,32 @@ router.use(methodOverride(function(req, res){
       }
 }))
 
+/* Call to synchronize events. */
+router.route('/sync')
+  .get(function(req, res) {
+    mongoose.model('Event').findById("asdf", function (err, event) {
+      if (err) {
+        console.log('GET Error: There was a problem retrieving: ' + err);
+      } else {
+        console.log('GET Retrieving ID: ' + event._id);
+        res.format({
+          html: function(){
+              res.render('events/show', {
+                "description" : event.description,
+                "starttime" : event.starttime,
+                "endtime" : event.endtime,
+                "location" : event.location,
+                "name" : event.name
+              });
+          },
+          json: function(){
+              res.json(event);
+          }
+        });
+      }
+    });
+  });
+
 // Search events by location and Date ( code for searching by date is pending) 
 router.get('/search/:location', function(req, res) {
         if (req.params.location) {
@@ -101,15 +127,6 @@ router.route('/')
               }
         })
     });
-
-/* Call to synchronize events. */
-router.route('/sync').get(function(req, res) {
-  res.format({
-    json: function(){
-      res.json("success");
-    }
-  });
-});
 
 // route middleware to validate :id
 router.param('id', function(req, res, next, id) {
