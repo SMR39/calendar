@@ -105,6 +105,9 @@ router.route('/')
 /* Call to synchronize events. */
 router.route('/sync').get(function(req, res) {
   res.format({
+    html: function(){
+      res.redirect("/events");
+    },
     json: function(){
       res.json("success");
     }

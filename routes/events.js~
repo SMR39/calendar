@@ -103,16 +103,13 @@ router.route('/')
     });
 
 /* Call to synchronize events. */
-router.route('/sync')
-  .get(function(req, res) {
-      res.format({
-          json: function(){
-              res.json("success");
-          }
-        });
-      }
-    });
+router.route('/sync').get(function(req, res) {
+  res.format({
+    json: function(){
+      res.json("success");
+    }
   });
+});
 
 // route middleware to validate :id
 router.param('id', function(req, res, next, id) {
