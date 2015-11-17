@@ -102,10 +102,17 @@ router.route('/')
         })
     });
 
-/* GET New Event page. */
-router.get('/new', function(req, res) {
-    res.render('events/new', { title: 'Add New Event' });
-});
+/* Call to synchronize events. */
+router.route('/sync')
+  .get(function(req, res) {
+      res.format({
+          json: function(){
+              res.json("success");
+          }
+        });
+      }
+    });
+  });
 
 // route middleware to validate :id
 router.param('id', function(req, res, next, id) {

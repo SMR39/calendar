@@ -36,25 +36,10 @@ router.get('/search/:location', function(req, res) {
         	  json: function(){
               	res.json(event);
          	 }
-      
-	 /*var q = mongoose.model('Event').find({"location": {"$gte": new Date(req.params.query), "$lt": (new Date(req.params.query) + 1)}});
-                
-		var promise = q.exec();
-                promise.addBack(function(err, docs){
-                	res.format({
-                        //HTML response will render the 'edit.jade' template
-                        html: function(){
-                              res.render('events/search', {
-                                   "events" : docs
-                         });
-                      },
-                         //JSON response will return the JSON output
-                        json: function(){
-                       res.json(docs);
-            */            });
-                    }
+         });
+        }
 
-                });
+        });
 	  }
 	});
           
@@ -71,13 +56,6 @@ router.route('/')
               } else {
                   //respond to both HTML and JSON. JSON responses require 'Accept: application/json;' in the Request Header
                   res.format({
-                      //HTML response will render the index.jade file in the views/events folder. We are also setting "events" to be an accessible variable in our jade view
-                    html: function(){
-                        res.render('events/index', {
-                              title: 'All my events',
-                              "events" : events
-                          });
-                    },
                    // JSON response will show all blobs in JSON format
                     json: function(){
                         res.json(events);
@@ -124,10 +102,17 @@ router.route('/')
         })
     });
 
-/* GET New Event page. */
-router.get('/new', function(req, res) {
-    res.render('events/new', { title: 'Add New Event' });
-});
+/* Call to synchronize events. */
+router.route('/sync')
+  .get(function(req, res) {
+      res.format({
+          json: function(){
+              res.json("success");
+          }
+        });
+      }
+    });
+  });
 
 // route middleware to validate :id
 router.param('id', function(req, res, next, id) {
@@ -239,9 +224,6 @@ router.route('/:id/edit')
 	          else {
 	                  //HTML responds by going back to the page or you can be fancy and create a new view that shows a success page.
 	                  res.format({
-	                      html: function(){
-	                           res.redirect("/events/" + event._id);
-	                     },
 	                     //JSON responds showing the updated values
 	                    json: function(){
 	                           res.json(event);
