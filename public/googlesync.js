@@ -1,17 +1,19 @@
-alert(require('fs'));
+//alert(require('fs'));
 
-var fs = require('fs');
-alert("test2");
-var readline = require('readline');
-alert("test3");
-var google = require('googleapis');
-alert("test4");
-var googleAuth = require('google-auth-library');
+//var fs = require('fs');
+//alert("test2");
+//var readline = require('readline');
+//alert("test3");
+//var google = require('googleapis');
+//alert("test4");
+//var googleAuth = require('google-auth-library');
 alert("test5");
 
 var SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
+alert("test");
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
+alert("te");
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 alert("test6");
 // Load client secrets from a local file.
