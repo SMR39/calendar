@@ -319,15 +319,15 @@ function getNewToken(oauth2Client, callback) {
         scope: SCOPES
     });
     console.log('Authorize this app by visiting this url: ', authUrl);
-    //var rl = readline.createInterface({
-    //    input: process.stdin,
-    //    output: process.stdout
-    //});
-    //rl.question('Enter the code from that page here: ', function (code) {
-    //    console.log(code);
-    //    rl.close();
+    var rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+    rl.question('Enter the code from that page here: ', function (code) {
+        console.log(code);
+        rl.close();
         
-        oauth2Client.getToken("4/tO_N8RBSa56SR9Pc-dVPQdCFkiChG9D-JoMtuSipDkU", function (err, token) {
+        oauth2Client.getToken(code, function (err, token) {
             if (err) {
                 console.log('Error while trying to retrieve access token', err);
                 return;
@@ -336,7 +336,7 @@ function getNewToken(oauth2Client, callback) {
             storeToken(token);
             callback(oauth2Client);
         });
-    //});
+    });
 }
 
 /**
@@ -391,7 +391,7 @@ function syncEvents(auth) {
                     var googleEvent = googleEvents[i];
                     var start = googleEvent.start.dateTime || googleEvent.start.date;
                     var end = googleEvent.end.dateTime || googleEvent.end.date;
-                    console.log('%s - %s', start, event.summary);
+                    console.log('%s - %s', start, googleEvent.summary);
 
                     var exists = false;
                     for (var j = 0; j < mongoEvents.length; j++) {
@@ -402,11 +402,11 @@ function syncEvents(auth) {
                     }
                     if (!exists) {
                         mongoose.model('Event').create({
-                            name: event.summary,
-                            description: event.description,
+                            name: googleEvent.summary,
+                            description: googleEvent.description,
                             starttime: start,
                             endtime: end,
-                            location: event.location
+                            location: googleEvent.location
                         }, function (err, event) {
                             if (err) {
                                 console.log("Error synchronizing.");
