@@ -391,7 +391,7 @@ function syncEvents(auth) {
                     var googleEvent = googleEvents[i];
                     var start = googleEvent.start.dateTime || googleEvent.start.date;
                     var end = googleEvent.end.dateTime || googleEvent.end.date;
-                    console.log('%s - %s', start, event.summary);
+                    console.log('%s - %s', start, googleEvent.summary);
 
                     var exists = false;
                     for (var j = 0; j < mongoEvents.length; j++) {
@@ -402,11 +402,11 @@ function syncEvents(auth) {
                     }
                     if (!exists) {
                         mongoose.model('Event').create({
-                            name: event.summary,
-                            description: event.description,
+                            name: googleEvent.summary,
+                            description: googleEvent.description,
                             starttime: start,
                             endtime: end,
-                            location: event.location
+                            location: googleEvent.location
                         }, function (err, event) {
                             if (err) {
                                 console.log("Error synchronizing.");
@@ -434,10 +434,6 @@ function syncEvents(auth) {
                             'description': mongoEvent.description,
                             'start': {
                                 'dateTime': mongoEvent.starttime,
-                                'timeZone': 'America/Los_Angeles',
-                            },
-                            'end': {
-                                'dateTime': mongoEvent.endtime,
                                 'timeZone': 'America/Los_Angeles',
                             }
                         };

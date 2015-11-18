@@ -369,7 +369,7 @@ function syncEvents(auth) {
         auth: auth,
         calendarId: 'primary',
         timeMin: (new Date()).toISOString(),
-        maxResults: 1, // TODO: Set to 99999
+        maxResults: 99999,
         singleEvents: true,
         orderBy: 'startTime'
     }, function (err, response) {
@@ -434,10 +434,6 @@ function syncEvents(auth) {
                             'description': mongoEvent.description,
                             'start': {
                                 'dateTime': mongoEvent.starttime,
-                                'timeZone': 'America/Los_Angeles',
-                            },
-                            'end': {
-                                'dateTime': mongoEvent.endtime,
                                 'timeZone': 'America/Los_Angeles',
                             }
                         };
