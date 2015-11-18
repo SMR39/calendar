@@ -135,9 +135,10 @@
 	function syncEvents() {
 		$.ajax({
 		  type:'GET',
-		  url:'http://130.233.42.130:8080/sync',
+		  url:'http://130.233.42.130:8080/events/sync',
 		  success: function() {
 			alert("Synchronized!");
+			// window reload?
 		  }
 		});
 	}

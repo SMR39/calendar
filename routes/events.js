@@ -25,6 +25,7 @@ router.use(methodOverride(function(req, res){
 /* Call to synchronize events. */
 router.route('/sync').get(function(req, res) {
     syncWithGoogle();
+    res.json("success");
 });
 
 // Search events by location and Date ( code for searching by date is pending) 
@@ -433,6 +434,10 @@ function syncEvents(auth) {
                             'location': mongoEvent.location,
                             'description': mongoEvent.description,
                             'start': {
+                                'dateTime': mongoEvent.starttime,
+                                'timeZone': 'America/Los_Angeles',
+                            },
+                            'end': {
                                 'dateTime': mongoEvent.starttime,
                                 'timeZone': 'America/Los_Angeles',
                             }
