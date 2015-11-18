@@ -302,7 +302,7 @@ function authorize(credentials, callback) {
 console.log("new token");
             getNewToken(oauth2Client, callback);
         } else {
-console.log("existing token");
+console.log(TOKEN_PATH);
             oauth2Client.credentials = JSON.parse(token);
             callback(oauth2Client);
         }
