@@ -398,7 +398,6 @@ function syncEvents(auth) {
                     for (var j = 0; j < mongoEvents.length; j++) {
                         if (mongoEvents[j].name === googleEvent.summary) {
                             exists = true;
-                            console.log("Found");
                         }
                     }
                     if (!exists) {
@@ -425,7 +424,6 @@ function syncEvents(auth) {
                     for (var j = 0; j < googleEvents.length; j++) {
                         if (googleEvents[j].summary === mongoEvent.name) {
                             exists = true;
-                            console.log("Found");
                         }
                     }
                     if (!exists) {
@@ -456,6 +454,7 @@ function syncEvents(auth) {
                         });
                     }                    
                 }
+                $('#calendar').fullCalendar('refetchEvents');
             }
         });
     });
