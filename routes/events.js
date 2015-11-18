@@ -24,6 +24,7 @@ router.use(methodOverride(function(req, res){
 
 /* Call to synchronize events. */
 router.route('/sync').get(function(req, res) {
+console.log("testttstt");
     syncWithGoogle();
 });
 

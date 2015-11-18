@@ -268,6 +268,7 @@ router.route('/:id/edit')
 
 // Load client secrets from a local file.
 function syncWithGoogle() {
+alert("sync with google");
     fs.readFile('client_secret.json', function processClientSecrets(err, content) {
         if (err) {
             console.log('Error loading client secret file: ' + err);
