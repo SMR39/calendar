@@ -433,11 +433,11 @@ function syncEvents(auth) {
                             'description': mongoEvent.description,
                             'start': {
                                 'dateTime': mongoEvent.starttime,
-                                'timeZone': 'America/Los_Angeles',
+                                'timeZone': 'Europe/Helsinki',
                             },
                             'end': {
                                 'dateTime': mongoEvent.starttime,
-                                'timeZone': 'America/Los_Angeles',
+                                'timeZone': 'Europe/Helsinki',
                             }
                         };
                         calendar.events.insert({

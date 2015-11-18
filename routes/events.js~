@@ -454,7 +454,6 @@ function syncEvents(auth) {
                         });
                     }                    
                 }
-                $('#calendar').fullCalendar('refetchEvents');
             }
         });
     });
