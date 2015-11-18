@@ -23,10 +23,8 @@ router.use(methodOverride(function(req, res){
 }))
 
 /* Call to synchronize events. */
-router.route('/sync')
-  .get(function(req, res) {
-    syncWithGoogle()
-  });
+router.route('/sync').get(function(req, res) {
+    syncWithGoogle();
 });
 
 // Search events by location and Date ( code for searching by date is pending) 
