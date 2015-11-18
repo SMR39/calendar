@@ -396,7 +396,7 @@ function syncEvents(auth) {
 
                     var exists = false;
                     for (var j = 0; j < mongoEvents.length; j++) {
-                        if (mongoEvents[j].name === googleEvent.name) {
+                        if (mongoEvents[j].name === googleEvent.summary) {
                             exists = true;
                             console.log("Found");
                         }
@@ -423,7 +423,7 @@ function syncEvents(auth) {
 
                     var exists = false;
                     for (var j = 0; j < googleEvents.length; j++) {
-                        if (googleEvents[j].name === mongoEvent.name) {
+                        if (googleEvents[j].summary === mongoEvent.name) {
                             exists = true;
                             console.log("Found");
                         }
