@@ -359,21 +359,19 @@ function storeToken(token) {
 }
 
 /**
- * Lists the next 10 events on the user's primary calendar.
+ * Synchronizes events between google calendar and party calendar
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function syncEvents(auth) {
     var calendar = google.calendar('v3');
     
-    console.log("Synchronizing with: " + firstCalendar.name);
-    
-    //add google events to calendar from mongoDB
+    // get Google calendar events.
     calendar.events.list({
         auth: auth,
         calendarId: 'primary',
         timeMin: (new Date()).toISOString(),
-        maxResults: 99999,
+        maxResults: 1, // TODO: Set to 99999
         singleEvents: true,
         orderBy: 'startTime'
     }, function (err, response) {
@@ -381,110 +379,83 @@ function syncEvents(auth) {
             console.log('The API returned an error: ' + err);
             return;
         }
-        var events = response.items;
-        if (events.length == 0) {
-            console.log('No upcoming events found.');
-        } else {
-            console.log('Google calendar events:');
-            for (var i = 0; i < events.length; i++) {
-                var event = events[i];
-                var start = event.start.dateTime || event.start.date;
-                var end = event.end.dateTime || event.end.date;
-                console.log('%s - %s', start, event.summary);
-                
-                mongoose.model('Event').create({
-                    name: event.summary,
-                    description: event.description,
-                    starttime: start,
-                    endtime: end,
-                    location: event.location
-                }, function (err, event) {
-                    if (err) {
-                        console.log("Error synchronizing.");
-                    } else {
-                        /*mongoose.model('Event').find({}, function (err, calendarEvents) {
-                            var exists = false;
-                            for (var j = 0; j < calendarEvents.length; j++) {
-                                if (calendarEvents[j].name === event.name) {
-                                    exists = true;
-                                }
-                            }
-                            if (!exists) {
-                                calendarEvents.push(event);
-                                calendarFromMongoDB.update({
-                                    events: calendarEvents
-                                }, function (errUpdate, calendarID) {
-                                    if (err) {
-                                        console.log("There was a problem updating the information to the database: " + errUpdate);
-                                    } else {
-                                        console.log("Event added");
-                                    }
-                                });
-                            } else {
-                                console.log("Event already exists");
-                            }
-                        });*/
-                        console.log("might exist already???");
+        var googleEvents = response.items;
+
+        // get mongo events.
+        mongoose.model('Event').find({}, function (err, mongoEvents) {
+            if (googleEvents.length == 0) {
+                console.log('No Google events found.');
+            } else {
+                console.log('Found Google events:');
+
+                // add google events to mongo if not exists already.
+                for (var i = 0; i < googleEvents.length; i++) {
+                    var googleEvent = googleEvents[i];
+                    var start = googleEvent.start.dateTime || googleEvent.start.date;
+                    var end = googleEvent.end.dateTime || googleEvent.end.date;
+                    console.log('%s - %s', start, event.summary);
+
+                    var exists = false;
+                    for (var j = 0; j < mongoEvents.length; j++) {
+                        if (mongoEvents[j].name === googleEvent.name) {
+                            exists = true;
+                            break;
+                        }
                     }
-                });
-            }
-        }
-    });
-    
-    //add mongoDB events to google calendar
-    mongoose.model('Calendar').findById(firstCalendar._id, function (err, calendarFromMongoDB) {
-        
-        var mongoEvents = calendarFromMongoDB.events;
-        
-        calendar.events.list({
-            auth: auth,
-            calendarId: 'primary',
-            timeMin: (new Date()).toISOString(),
-            maxResults: 10,
-            singleEvents: true,
-            orderBy: 'startTime'
-        }, function (err, response) {
-            if (err) {
-                console.log('The API returned an error: ' + err);
-                return;
-            }
-            var googleEvents = response.items;
-            for (var i = 0; i < mongoEvents.length; i++) {
-                var mongoEvent = mongoEvents[i];
-                var exists = false;
-                for (var j = 0; j < googleEvents.length; j++) {
-                    var googleEvent = googleEvents[j];
-                    if (mongoEvent.name === googleEvent.summary) {
-                        exists = true;
+                    if (!exists) {
+                        mongoose.model('Event').create({
+                            name: event.summary,
+                            description: event.description,
+                            starttime: start,
+                            endtime: end,
+                            location: event.location
+                        }, function (err, event) {
+                            if (err) {
+                                console.log("Error synchronizing.");
+                            } else {
+                                console.log("Synchronized event from Google calendar to party calendar.");
+                            }
+                        });
                     }
                 }
-                
-                if (!exists) {
-                    var event = {
-                        'summary': mongoEvent.name,
-                        'location': mongoEvent.location,
-                        'description': mongoEvent.description,
-                        'start': {
-                            'dateTime': mongoEvent.startTime,
-                            'timeZone': 'America/Los_Angeles',
-                        },
-                        'end': {
-                            'dateTime': mongoEvent.endTime,
-                            'timeZone': 'America/Los_Angeles',
+                // add mongo events to mongo if not exists already.
+                for (var i = 0; i < mongoEvents.length; i++) {
+                    var mongoEvent = mongoEvents[i];
+
+                    var exists = false;
+                    for (var j = 0; j < googleEvents.length; j++) {
+                        if (googleEvents[j].name === mongoEvent.name) {
+                            exists = true;
+                            break;
                         }
-                    };
-                    calendar.events.insert({
-                        auth: auth,
-                        calendarId: 'primary',
-                        resource: event,
-                    }, function (err, event) {
-                        if (err) {
-                            console.log('There was an error contacting the Calendar service: ' + err);
-                            return;
-                        }
-                        console.log('Event %s created.', event.summary);
-                        console.log(event.htmlLink);
-                    });
+                    }
+                    if (!exists) {
+                        var event = {
+                            'summary': mongoEvent.name,
+                            'location': mongoEvent.location,
+                            'description': mongoEvent.description,
+                            'start': {
+                                'dateTime': mongoEvent.starttime,
+                                'timeZone': 'America/Los_Angeles',
+                            },
+                            'end': {
+                                'dateTime': mongoEvent.endtime,
+                                'timeZone': 'America/Los_Angeles',
+                            }
+                        };
+                        calendar.events.insert({
+                            auth: auth,
+                            calendarId: 'primary',
+                            resource: event,
+                        }, function (err, event) {
+                            if (err) {
+                                console.log('There was an error contacting the Calendar service: ' + err);
+                                return;
+                            }
+                            console.log('Event %s created.', event.summary);
+                            console.log(event.htmlLink);
+                        });
+                    }                    
                 }
             }
         });
