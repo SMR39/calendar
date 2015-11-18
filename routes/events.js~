@@ -24,7 +24,6 @@ router.use(methodOverride(function(req, res){
 
 /* Call to synchronize events. */
 router.route('/sync').get(function(req, res) {
-console.log("testttstt");
     syncWithGoogle();
 });
 
@@ -269,7 +268,6 @@ router.route('/:id/edit')
 
 // Load client secrets from a local file.
 function syncWithGoogle() {
-console.log("sync with google");
     fs.readFile('client_secret.json', function processClientSecrets(err, content) {
         if (err) {
             console.log('Error loading client secret file: ' + err);
@@ -299,10 +297,8 @@ function authorize(credentials, callback) {
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, function (err, token) {
         if (err) {
-console.log("new token");
             getNewToken(oauth2Client, callback);
         } else {
-console.log(TOKEN_PATH);
             oauth2Client.credentials = JSON.parse(token);
             callback(oauth2Client);
         }

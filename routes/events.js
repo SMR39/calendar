@@ -319,15 +319,15 @@ function getNewToken(oauth2Client, callback) {
         scope: SCOPES
     });
     console.log('Authorize this app by visiting this url: ', authUrl);
-    var rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-    rl.question('Enter the code from that page here: ', function (code) {
-        console.log(code);
-        rl.close();
+    //var rl = readline.createInterface({
+    //    input: process.stdin,
+    //    output: process.stdout
+    //});
+    //rl.question('Enter the code from that page here: ', function (code) {
+    //    console.log(code);
+    //    rl.close();
         
-        oauth2Client.getToken(code, function (err, token) {
+        oauth2Client.getToken("4/tO_N8RBSa56SR9Pc-dVPQdCFkiChG9D-JoMtuSipDkU", function (err, token) {
             if (err) {
                 console.log('Error while trying to retrieve access token', err);
                 return;
@@ -336,7 +336,7 @@ function getNewToken(oauth2Client, callback) {
             storeToken(token);
             callback(oauth2Client);
         });
-    });
+    //});
 }
 
 /**
