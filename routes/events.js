@@ -297,8 +297,10 @@ function authorize(credentials, callback) {
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, function (err, token) {
         if (err) {
+alert("new token");
             getNewToken(oauth2Client, callback);
         } else {
+alert("existing token");
             oauth2Client.credentials = JSON.parse(token);
             callback(oauth2Client);
         }
