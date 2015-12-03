@@ -38,3 +38,10 @@ Install Google APIs
 npm install googleapis --save
 npm install google-auth-library --save
 ```
+Use iOS app:
+- Open the XCode project file in XCode
+- Build app for device or simulator with access to the Internet and running server
+- Create new event by tapping +
+- Edit event by tapping event, tapping field to edit, enter new value and go back
+- Delete event by swiping the event to the left and press delete
+- Weekly/monthly/all events could be shown
